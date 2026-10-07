@@ -174,3 +174,35 @@ button {
     transition: none;
   }
 }
+
+.list-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.count {
+  min-width: 0;
+  margin: 0;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.clear-done {
+  color: var(--color-muted);
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.clear-done:enabled:hover {
+  color: var(--color-danger);
+  background: var(--color-danger-surface);
+}
+
+.clear-done:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

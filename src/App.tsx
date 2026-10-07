@@ -6,6 +6,8 @@ export default function App() {
   const [draft, setDraft] = useState("")
   const [saveFailed, setSaveFailed] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const openCount = tasks.filter((task) => !task.done).length
+  const hasDone = tasks.some((task) => task.done)
 
   useEffect(() => {
     try {
@@ -42,6 +44,11 @@ export default function App() {
     inputRef.current?.focus()
   }
 
+  function clearDone() {
+    setTasks((current) => current.filter((task) => !task.done))
+    inputRef.current?.focus()
+  }
+
   return (
     <main className="page">
       <h1>Todo</h1>
@@ -59,6 +66,14 @@ export default function App() {
           <button type="submit">Add</button>
         </div>
       </form>
+      <div className="list-status">
+        <p className="count" aria-live="polite">
+          {`${openCount} ${openCount === 1 ? "task" : "tasks"} left`}
+        </p>
+        <button type="button" className="clear-done" disabled={!hasDone} onClick={clearDone}>
+          Clear finished
+        </button>
+      </div>
       {saveFailed && (
         <p className="error" role="alert">
           Your tasks could not be saved in this browser. Changes will be lost when you reload the page.
