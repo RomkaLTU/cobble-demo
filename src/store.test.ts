@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { STORAGE_KEY, addTask, loadTasks, saveTasks, toggleTask } from './store'
+import { STORAGE_KEY, addTask, loadTasks, removeTask, saveTasks, toggleTask } from './store'
 
 function memoryStorage(initial: Record<string, string> = {}) {
   const data = new Map(Object.entries(initial))
@@ -21,6 +21,21 @@ describe('addTask', () => {
     expect(tasks[0].text).toBe('Book the room')
     expect(addTask(tasks, '')).toBe(tasks)
     expect(addTask(tasks, '   ')).toBe(tasks)
+  })
+})
+
+describe('removeTask', () => {
+  it('removes the matching task and keeps the rest in order without mutating the input', () => {
+    const tasks = addTask(addTask(addTask([], 'Book the room'), 'Order lunch'), 'Send invites')
+    const before = [...tasks]
+    const next = removeTask(tasks, tasks[1].id)
+    expect(next.map((t) => t.text)).toEqual(['Book the room', 'Send invites'])
+    expect(tasks).toEqual(before)
+  })
+
+  it('returns the array unchanged for an unknown id', () => {
+    const tasks = addTask([], 'Book the room')
+    expect(removeTask(tasks, 'missing')).toBe(tasks)
   })
 })
 
