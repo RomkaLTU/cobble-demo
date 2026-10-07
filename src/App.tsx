@@ -1,8 +1,22 @@
 import { useEffect, useRef, useState, type FormEvent } from "react"
 import { load, save, STORAGE_KEY, type Task } from "./storage"
 
+type View = "all" | "open" | "done"
+
+const views: { value: View; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "open", label: "Open" },
+  { value: "done", label: "Finished" },
+]
+
+function emptyMessage(tasks: Task[], view: View): string {
+  if (tasks.length === 0) return "No tasks yet. Add your first task above."
+  return view === "open" ? "No open tasks" : "No finished tasks"
+}
+
 export default function App() {
   const [tasks, setTasks] = useState(load)
+  const [view, setView] = useState<View>("all")
   const [draft, setDraft] = useState("")
   const [saveFailed, setSaveFailed] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -49,6 +63,8 @@ export default function App() {
     inputRef.current?.focus()
   }
 
+  const visible = view === "all" ? tasks : tasks.filter((task) => task.done === (view === "done"))
+
   return (
     <main className="page">
       <h1>Todo</h1>
@@ -74,16 +90,31 @@ export default function App() {
           Clear finished
         </button>
       </div>
+      <fieldset className="view-switch">
+        <legend className="visually-hidden">Show</legend>
+        {views.map((option) => (
+          <label key={option.value}>
+            <input
+              type="radio"
+              name="view"
+              value={option.value}
+              checked={view === option.value}
+              onChange={() => setView(option.value)}
+            />
+            {option.label}
+          </label>
+        ))}
+      </fieldset>
       {saveFailed && (
         <p className="error" role="alert">
           Your tasks could not be saved in this browser. Changes will be lost when you reload the page.
         </p>
       )}
-      {tasks.length === 0 ? (
-        <p className="empty">No tasks yet. Add your first task above.</p>
+      {visible.length === 0 ? (
+        <p className="empty">{emptyMessage(tasks, view)}</p>
       ) : (
         <ul className="task-list">
-          {tasks.map((task) => (
+          {visible.map((task) => (
             <li key={task.id} className={task.done ? "task done" : "task"}>
               <label className="task-label">
                 <input type="checkbox" checked={task.done} onChange={() => toggle(task.id)} />
