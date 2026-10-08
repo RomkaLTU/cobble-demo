@@ -13,6 +13,11 @@ export function removeTask(tasks: Task[], id: string): Task[] {
   return next.length === tasks.length ? tasks : next
 }
 
+export function clearDone(tasks: Task[]): Task[] {
+  const next = tasks.filter((task) => !task.done)
+  return next.length === tasks.length ? tasks : next
+}
+
 export function loadTasks(storage: Pick<Storage, 'getItem'>): Task[] {
   try {
     const parsed: unknown = JSON.parse(storage.getItem(STORAGE_KEY) ?? '[]')
