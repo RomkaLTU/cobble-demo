@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { STORAGE_KEY, addTask, clearDone, countOpen, loadTasks, removeTask, saveTasks, toggleTask } from './store'
+import { STORAGE_KEY, addTask, clearDone, countOpen, filterTasks, loadTasks, removeTask, saveTasks, toggleTask } from './store'
 
 function memoryStorage(initial: Record<string, string> = {}) {
   const data = new Map(Object.entries(initial))
@@ -97,5 +97,27 @@ describe('countOpen', () => {
     expect(countOpen([])).toBe(0)
     expect(countOpen(ticked)).toBe(2)
     expect(countOpen(ticked.map((t) => ({ ...t, done: true })))).toBe(0)
+  })
+})
+
+describe('filterTasks', () => {
+  const tasks = addTask(addTask(addTask([], 'Book the room'), 'Order lunch'), 'Send the invoice')
+  const ticked = toggleTask(tasks, tasks[1].id)
+
+  it('returns the same array for all', () => {
+    expect(filterTasks(ticked, 'all')).toBe(ticked)
+  })
+
+  it('keeps only open tasks in order for open', () => {
+    expect(filterTasks(ticked, 'open').map((t) => t.text)).toEqual(['Book the room', 'Send the invoice'])
+  })
+
+  it('keeps only done tasks in order for done', () => {
+    expect(filterTasks(ticked, 'done').map((t) => t.text)).toEqual(['Order lunch'])
+  })
+
+  it('returns an empty array when nothing matches', () => {
+    expect(filterTasks(ticked.map((t) => ({ ...t, done: true })), 'open')).toEqual([])
+    expect(filterTasks(ticked.map((t) => ({ ...t, done: false })), 'done')).toEqual([])
   })
 })
