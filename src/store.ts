@@ -39,3 +39,10 @@ export function toggleTask(tasks: Task[], id: string): Task[] {
 export function countOpen(tasks: Task[]): number {
   return tasks.filter((task) => !task.done).length
 }
+
+export type View = 'all' | 'open' | 'done'
+
+export function filterTasks(tasks: Task[], view: View): Task[] {
+  if (view === 'all') return tasks
+  return tasks.filter((task) => task.done === (view === 'done'))
+}
