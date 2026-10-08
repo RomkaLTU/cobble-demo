@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
+import ListToolbar from './components/ListToolbar'
 import NewTaskForm from './components/NewTaskForm'
 import TaskList from './components/TaskList'
-import { STORAGE_KEY, addTask, loadTasks, removeTask, saveTasks, toggleTask, type Task } from './store'
+import { STORAGE_KEY, addTask, countOpen, loadTasks, removeTask, saveTasks, toggleTask, type Task } from './store'
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>(() => loadTasks(localStorage))
@@ -37,6 +38,7 @@ export default function App() {
     <main>
       <h1>Todo</h1>
       <NewTaskForm onAdd={handleAdd} />
+      <ListToolbar openCount={countOpen(tasks)} />
       <TaskList tasks={tasks} onToggle={handleToggle} onRemove={handleRemove} />
     </main>
   )
