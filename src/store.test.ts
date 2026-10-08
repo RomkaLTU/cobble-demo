@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { STORAGE_KEY, addTask, loadTasks, removeTask, saveTasks, toggleTask } from './store'
+import { STORAGE_KEY, addTask, countOpen, loadTasks, removeTask, saveTasks, toggleTask } from './store'
 
 function memoryStorage(initial: Record<string, string> = {}) {
   const data = new Map(Object.entries(initial))
@@ -67,5 +67,15 @@ describe('toggleTask', () => {
   it('returns the array unchanged for an unknown id', () => {
     const tasks = addTask([], 'Book the room')
     expect(toggleTask(tasks, 'missing')).toBe(tasks)
+  })
+})
+
+describe('countOpen', () => {
+  it('counts only the tasks that are not done', () => {
+    const tasks = addTask(addTask(addTask([], 'Book the room'), 'Order lunch'), 'Send the invoice')
+    const ticked = toggleTask(tasks, tasks[1].id)
+    expect(countOpen([])).toBe(0)
+    expect(countOpen(ticked)).toBe(2)
+    expect(countOpen(ticked.map((t) => ({ ...t, done: true })))).toBe(0)
   })
 })
