@@ -30,3 +30,7 @@ export function toggleTask(tasks: Task[], id: string): Task[] {
   if (!tasks.some((task) => task.id === id)) return tasks
   return tasks.map((task) => (task.id === id ? { ...task, done: !task.done } : task))
 }
+
+export function countOpen(tasks: Task[]): number {
+  return tasks.filter((task) => !task.done).length
+}
