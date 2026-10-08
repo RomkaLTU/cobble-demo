@@ -8,6 +8,11 @@ export function addTask(tasks: Task[], text: string): Task[] {
   return [...tasks, { id: crypto.randomUUID(), text: trimmed, done: false, createdAt: Date.now() }]
 }
 
+export function removeTask(tasks: Task[], id: string): Task[] {
+  const next = tasks.filter((task) => task.id !== id)
+  return next.length === tasks.length ? tasks : next
+}
+
 export function loadTasks(storage: Pick<Storage, 'getItem'>): Task[] {
   try {
     const parsed: unknown = JSON.parse(storage.getItem(STORAGE_KEY) ?? '[]')
