@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import NewTaskForm from './components/NewTaskForm'
 import TaskList from './components/TaskList'
-import { STORAGE_KEY, addTask, loadTasks, saveTasks, toggleTask, type Task } from './store'
+import { STORAGE_KEY, addTask, loadTasks, removeTask, saveTasks, toggleTask, type Task } from './store'
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>(() => loadTasks(localStorage))
@@ -29,11 +29,15 @@ export default function App() {
     setTasks((current) => toggleTask(current, id))
   }
 
+  function handleRemove(id: string) {
+    setTasks((current) => removeTask(current, id))
+  }
+
   return (
     <main>
       <h1>Todo</h1>
       <NewTaskForm onAdd={handleAdd} />
-      <TaskList tasks={tasks} onToggle={handleToggle} />
+      <TaskList tasks={tasks} onToggle={handleToggle} onRemove={handleRemove} />
     </main>
   )
 }
