@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { STORAGE_KEY, addTask, countOpen, loadTasks, removeTask, saveTasks, toggleTask } from './store'
+import { STORAGE_KEY, addTask, clearDone, countOpen, loadTasks, removeTask, saveTasks, toggleTask } from './store'
 
 function memoryStorage(initial: Record<string, string> = {}) {
   const data = new Map(Object.entries(initial))
@@ -36,6 +36,26 @@ describe('removeTask', () => {
   it('returns the array unchanged for an unknown id', () => {
     const tasks = addTask([], 'Book the room')
     expect(removeTask(tasks, 'missing')).toBe(tasks)
+  })
+})
+
+describe('clearDone', () => {
+  it('removes every done task and keeps the open ones in order without mutating the input', () => {
+    const tasks = addTask(addTask(addTask([], 'Book the room'), 'Order lunch'), 'Send the invoice')
+    const ticked = toggleTask(toggleTask(tasks, tasks[1].id), tasks[2].id)
+    const before = [...ticked]
+    expect(clearDone(ticked).map((t) => t.text)).toEqual(['Book the room'])
+    expect(ticked).toEqual(before)
+  })
+
+  it('returns the array unchanged when no task is done', () => {
+    const tasks = addTask(addTask([], 'Book the room'), 'Order lunch')
+    expect(clearDone(tasks)).toBe(tasks)
+  })
+
+  it('returns an empty list when every task is done', () => {
+    const tasks = addTask([], 'Book the room')
+    expect(clearDone(toggleTask(tasks, tasks[0].id))).toEqual([])
   })
 })
 
