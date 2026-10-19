@@ -4,6 +4,7 @@
   --color-text: #0f172a;
   --color-muted: #475569;
   --color-border: #cbd5e1;
+  --color-subtle: #f1f5f9;
   --color-accent: #1d4ed8;
   --color-accent-hover: #1e40af;
   --space-1: 0.5rem;
@@ -110,7 +111,34 @@ h1 {
   align-items: center;
   gap: var(--space-2);
   min-height: var(--control-height);
-  padding-inline: var(--space-3);
+  padding-inline: var(--space-3) var(--space-1);
+}
+
+.task__remove {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-height);
+  height: var(--control-height);
+  margin-inline-start: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background-color 150ms, color 150ms;
+}
+
+.task__remove:hover {
+  background: var(--color-subtle);
+  color: var(--color-text);
+}
+
+.task__remove:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .task + .task {
@@ -150,7 +178,8 @@ h1 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .new-task button {
+  .new-task button,
+  .task__remove {
     transition: none;
   }
 }
