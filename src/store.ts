@@ -20,3 +20,8 @@ export function loadTasks(storage: Pick<Storage, 'getItem'>): Task[] {
 export function saveTasks(storage: Pick<Storage, 'setItem'>, tasks: Task[]): void {
   storage.setItem(STORAGE_KEY, JSON.stringify(tasks))
 }
+
+export function toggleTask(tasks: Task[], id: string): Task[] {
+  if (!tasks.some((task) => task.id === id)) return tasks
+  return tasks.map((task) => (task.id === id ? { ...task, done: !task.done } : task))
+}
